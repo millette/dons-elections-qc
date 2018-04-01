@@ -58,39 +58,48 @@ const nextPage = ($) => {
   return { next, last }
 }
 
-/*
-// "/francais/provincial/financement-et-depenses-electorales/recherche-sur-les-donateurs.php?idrech=151254&an=2018&fkent=00085&v=Québec&cp=G2J0C4"
-
-const parseDetails = (a) => {
-  const href = a.attr('href')
-
-  return ret
-}
-*/
-
 const parse = (res) => {
   const $ = cheerio.load(iconv.decode(res.body, 'win1252'), { decodeEntities: false })
   const xs = []
   $('table.tableau tbody tr').slice(1, -1).each(function () {
-    const x = $('td', this).map((i, el) => i ? $(el).text() : el)
     let nom
     let details
-    const a = $('a', $(x[0]))
-    if (a.html()) {
-      nom = a.html().trim()
-      // details = a.attr('href')
-      details = parseDetails(a)
-    } else {
-      nom = $(x[0]).html().trim()
-    }
-    xs.push({
-      nom,
-      details,
-      montant: parseFloat(x[1].trim().replace(/( |&nbsp;|\xa0)/g, '').replace(',', '.')),
-      versements: parseInt(x[2], 10) || undefined,
-      parti: x[3].trim(),
-      annee: parseInt(x[4], 10)
+    let montant
+    let versements
+    let parti
+    let annee
+
+    const x = $('td', this).map((i, el) => {
+      const $el = $(el)
+      switch (i) {
+        case 0:
+          const a = $('a', $el)
+          if (a.html()) {
+            nom = a.html().trim()
+            details = parseDetails(a)
+          } else {
+            nom = $(x[0]).html().trim()
+          }
+          break
+
+        case 1:
+          montant = parseFloat($el.text().trim().replace(/( |&nbsp;|\xa0)/g, '').replace(',', '.'))
+          break
+
+        case 2:
+          versements = parseInt($el.text(), 10) || undefined
+          break
+
+        case 3:
+          parti = $el.html().trim().replace(/<br>/g, '\n')
+          break
+
+        case 4:
+          annee = parseInt($el.text(), 10)
+          break
+      }
     })
+    xs.push({ nom, details, montant, versements, parti, annee })
   })
   if (xs.length) { return { xs, ...nextPage($) } }
 }
