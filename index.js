@@ -62,44 +62,38 @@ const parse = (res) => {
   const $ = cheerio.load(iconv.decode(res.body, 'win1252'), { decodeEntities: false })
   const xs = []
   $('table.tableau tbody tr').slice(1, -1).each(function () {
-    let nom
-    let details
-    let montant
-    let versements
-    let parti
-    let annee
-
-    const x = $('td', this).map((i, el) => {
+    const ret = {}
+    $('td', this).each((i, el) => {
       const $el = $(el)
       switch (i) {
         case 0:
           const a = $('a', $el)
           if (a.html()) {
-            nom = a.html().trim()
-            details = parseDetails(a)
+            ret.nom = a.html().trim()
+            ret.details = parseDetails(a)
           } else {
-            nom = $(x[0]).html().trim()
+            ret.nom = $el.html().trim()
           }
           break
 
         case 1:
-          montant = parseFloat($el.text().trim().replace(/( |&nbsp;|\xa0)/g, '').replace(',', '.'))
+          ret.montant = parseFloat($el.text().trim().replace(/( |&nbsp;|\xa0)/g, '').replace(',', '.'))
           break
 
         case 2:
-          versements = parseInt($el.text(), 10) || undefined
+          ret.versements = parseInt($el.text(), 10) || undefined
           break
 
         case 3:
-          parti = $el.html().trim().replace(/<br>/g, '\n')
+          ret.parti = $el.html().trim().replace(/<br>/g, '\n')
           break
 
         case 4:
-          annee = parseInt($el.text(), 10)
+          ret.annee = parseInt($el.text(), 10)
           break
       }
     })
-    xs.push({ nom, details, montant, versements, parti, annee })
+    xs.push(ret)
   })
   if (xs.length) { return { xs, ...nextPage($) } }
 }

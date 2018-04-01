@@ -19,7 +19,8 @@ const doYear = (year) => {
     .then(readYear)
     .then((xs) => {
       fs.writeFileSync(`dons/dons-elections-qc-${year}.json`, JSON.stringify(xs))
-      console.log(year, xs.length, Date.now() - now - 15000)
+      console.log(
+        year, xs.length, 'items', Date.now() - now - 15000, Math.round(1000 * xs.length / (Date.now() - now - 15000)) / 1000, 'ms per item')
     })
 }
 
