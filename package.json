@@ -1,0 +1,23 @@
+{
+  "name": "dep-qc",
+  "version": "0.0.0",
+  "license": "AGPL-3.0",
+  "main": "index.js",
+  "bin": "go",
+  "scripts": {
+    "lint": "standard"
+  },
+  "engines": {
+    "node": ">=8.11.1"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.2",
+    "delay": "^2.0.0",
+    "got": "^8.3.0",
+    "iconv-lite": "^0.4.19",
+    "p-map": "^1.2.0"
+  },
+  "devDependencies": {
+    "standard": "^11.0.1"
+  }
+}

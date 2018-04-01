@@ -1,0 +1,6 @@
+bads
+node_modules
+.env
+.dat
+yarn-error.log
+wrk
