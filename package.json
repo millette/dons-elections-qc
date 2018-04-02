@@ -15,6 +15,7 @@
     "delay": "^2.0.0",
     "got": "^8.3.0",
     "iconv-lite": "^0.4.19",
+    "lodash.range": "^3.2.0",
     "p-map": "^1.2.0"
   },
   "devDependencies": {
